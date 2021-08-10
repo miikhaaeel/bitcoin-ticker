@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+import 'package:bitcoin_ticker/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'coin_data.dart';
 
@@ -21,6 +24,40 @@ class _PriceScreenState extends State<PriceScreen> {
       dropDownItems.add(newItem);
     }
     return dropDownItems;
+  }
+
+  List<Text> getPickerItem() {
+    List<Text> pickerItems = [];
+
+    for (String currency in currenciesList) {
+      pickerItems.add(
+        Text(currency),
+      );
+    }
+    return pickerItems;
+  }
+
+  DropdownButton getDropDownButton() {
+    return DropdownButton(
+      value: selectedValue,
+      items: getDropDownItem(),
+      onChanged: (value) {
+        setState(() {
+          selectedValue = value as String;
+        });
+      },
+    );
+  }
+
+  CupertinoPicker getCupertinoPicker() {
+    return CupertinoPicker(
+      backgroundColor: Colors.lightBlue,
+      itemExtent: 32.0,
+      onSelectedItemChanged: (selectedIndex) {
+        print(selectedIndex);
+      },
+      children: getPickerItem(),
+    );
   }
 
   @override
@@ -54,20 +91,28 @@ class _PriceScreenState extends State<PriceScreen> {
               ),
             ),
           ),
+          TextButton(
+              onPressed: () async {
+                CoinData coinData = CoinData(
+                  url: kUrl,
+                  header: kHeader,
+                  apiKey: kApiKey,
+                );
+                var data = await coinData.getCoinData();
+                print(data);
+              },
+              child: Container(
+                color: Colors.amber,
+                height: 30,
+                width: 30,
+              )),
           Container(
             height: 150.0,
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: DropdownButton(
-              value: selectedValue,
-              items: getDropDownItem(),
-              onChanged: (value) {
-                setState(() {
-                  selectedValue = value as String;
-                });
-              },
-            ),
+            child:
+                Platform.isAndroid ? getDropDownButton() : getCupertinoPicker(),
           ),
         ],
       ),
