@@ -1,5 +1,5 @@
 import 'dart:io' show Platform;
-import 'package:bitcoin_ticker/constants.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'coin_data.dart';
@@ -11,6 +11,14 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedValue = 'USD';
+  String bitCoinValue = '?';
+  String coin = 'BTC';
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
 
   List<DropdownMenuItem<String>> getDropDownItem() {
     List<DropdownMenuItem<String>> dropDownItems = [];
@@ -45,6 +53,7 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           selectedValue = value as String;
         });
+        getData();
       },
     );
   }
@@ -58,6 +67,15 @@ class _PriceScreenState extends State<PriceScreen> {
       },
       children: getPickerItem(),
     );
+  }
+
+  void getData() async {
+    bitCoinValue = '?';
+    CoinData coinData = CoinData(coin: coin, currency: selectedValue);
+    double data = await coinData.getCoinData();
+    setState(() {
+      bitCoinValue = data.toStringAsFixed(0);
+    });
   }
 
   @override
@@ -81,7 +99,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  '1 BTC = ? USD',
+                  '1 $coin = $bitCoinValue $selectedValue',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20.0,
@@ -92,15 +110,7 @@ class _PriceScreenState extends State<PriceScreen> {
             ),
           ),
           TextButton(
-              onPressed: () async {
-                CoinData coinData = CoinData(
-                  url: kUrl,
-                  header: kHeader,
-                  apiKey: kApiKey,
-                );
-                var data = await coinData.getCoinData();
-                print(data);
-              },
+              onPressed: getData,
               child: Container(
                 color: Colors.amber,
                 height: 30,
