@@ -1,8 +1,8 @@
 import 'dart:io' show Platform;
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'coin_data.dart';
+import 'crypto_card.dart';
 
 class PriceScreen extends StatefulWidget {
   @override
@@ -10,9 +10,8 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  String selectedValue = 'USD';
-  String bitCoinValue = '?';
-  String coin = 'BTC';
+  String selectedCurrency = 'USD';
+  String coinValue = '?';
 
   @override
   void initState() {
@@ -47,11 +46,11 @@ class _PriceScreenState extends State<PriceScreen> {
 
   DropdownButton getDropDownButton() {
     return DropdownButton(
-      value: selectedValue,
+      value: selectedCurrency,
       items: getDropDownItem(),
       onChanged: (value) {
         setState(() {
-          selectedValue = value as String;
+          selectedCurrency = value as String;
         });
         getData();
       },
@@ -69,13 +68,33 @@ class _PriceScreenState extends State<PriceScreen> {
     );
   }
 
+  bool isWaiting = false;
+  Map<String, String> coinValues = {};
   void getData() async {
-    bitCoinValue = '?';
-    CoinData coinData = CoinData(coin: coin, currency: selectedValue);
-    double data = await coinData.getCoinData();
+    isWaiting = true;
+    CoinData coinData = CoinData();
+    var data = await coinData.getCoinData(selectedCurrency);
+    isWaiting = false;
     setState(() {
-      bitCoinValue = data.toStringAsFixed(0);
+      coinValues = data;
     });
+  }
+
+  Column makeCards() {
+    List<CryptoCard> cryptoCards = [];
+    for (String crypto in cryptoList) {
+      cryptoCards.add(
+        CryptoCard(
+          cryptoCurrency: crypto,
+          currency: selectedCurrency,
+          coinValue: isWaiting ? '?' : coinValues[crypto] as String,
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: cryptoCards,
+    );
   }
 
   @override
@@ -85,47 +104,69 @@ class _PriceScreenState extends State<PriceScreen> {
         title: Text('🤑 Coin Ticker'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
+          makeCards(),
+          SizedBox(
+            height: 40,
+          ),
           Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 $coin = $bitCoinValue $selectedValue',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
+            padding: const EdgeInsets.only(left: 150, right: 150, bottom: 10),
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: <Color>[
+                          Color(0xFF0D47A1),
+                          Color(0xFF1976D2),
+                          Color(0xFF42A5F5),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Center(
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.all(10.0),
+                      primary: Colors.white,
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      getData();
+                    },
+                    child: const Text('Reload'),
+                  ),
+                ),
+              ],
             ),
           ),
-          TextButton(
-              onPressed: getData,
-              child: Container(
-                color: Colors.amber,
-                height: 30,
-                width: 30,
-              )),
-          Container(
-            height: 150.0,
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(bottom: 30.0),
-            color: Colors.lightBlue,
-            child:
-                Platform.isAndroid ? getDropDownButton() : getCupertinoPicker(),
+          Expanded(
+            child: Container(
+              height: 150.0,
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(bottom: 30.0),
+              color: Colors.lightBlue,
+              child: Platform.isAndroid
+                  ? getDropDownButton()
+                  : getCupertinoPicker(),
+            ),
           ),
         ],
       ),
     );
   }
 }
+//  TextButton(style: ButtonStyle(),
+//             onPressed: getData,
+//             child: Container(
+//               color: Colors.amber,
+//               child: Center(child: Text('Reload',style: ,),),
+              
+//               height: 30,
+//               width: 100,
+//             ),
+//           ),
