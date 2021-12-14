@@ -3,7 +3,7 @@
 A Flutter App that gives the price of different cryptocurrencies in several local currencies . 
 
 Star⭐ the repo if you like what you see😉.
-[![Twitter Follow](https://img.shields.io/twitter/follow/miikhaaeel.svg?style=social)](https://twitter.com/miikhaaeel)
+[![Twitter Follow](https://img.shields.io/twitter/follow/Mikhael.svg?style=social)](https://twitter.com/mii_khael)
 
 
 ## 📸 ScreenShots
