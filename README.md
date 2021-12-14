@@ -27,5 +27,5 @@ Star⭐ the repo if you like what you see😉.
 * A brain to think 🤓🤓
 
 ## 🤓 Author(s)
-**Fadowo Michael** [![Twitter Follow](https://img.shields.io/twitter/follow/miikhaaeel.svg?style=social)](https://twitter.com/miikhaaeel)
+**Fadowo Michael** [![Twitter Follow](https://img.shields.io/twitter/follow/Mikhael.svg?style=social)](https://twitter.com/mii_khael)
 
