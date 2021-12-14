@@ -11,7 +11,7 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
-  String coinValue = '?';
+  // String coinValue = '?';
 
   @override
   void initState() {
@@ -46,6 +46,7 @@ class _PriceScreenState extends State<PriceScreen> {
 
   DropdownButton getDropDownButton() {
     return DropdownButton(
+      dropdownColor: Colors.blue,
       value: selectedCurrency,
       items: getDropDownItem(),
       onChanged: (value) {
@@ -102,6 +103,7 @@ class _PriceScreenState extends State<PriceScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('🤑 Coin Ticker'),
+        backgroundColor: Colors.lightBlueAccent,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -112,7 +114,7 @@ class _PriceScreenState extends State<PriceScreen> {
             height: 40,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 150, right: 150, bottom: 10),
+            padding: const EdgeInsets.only(left: 100, right: 100, bottom: 10),
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
@@ -138,7 +140,7 @@ class _PriceScreenState extends State<PriceScreen> {
                     onPressed: () {
                       getData();
                     },
-                    child: const Text('Reload'),
+                    child: Text('Reload'),
                   ),
                 ),
               ],
@@ -146,9 +148,10 @@ class _PriceScreenState extends State<PriceScreen> {
           ),
           Expanded(
             child: Container(
-              height: 150.0,
+              //  height: 150.0,
               alignment: Alignment.center,
-              padding: EdgeInsets.only(bottom: 30.0),
+              padding: EdgeInsets.only(bottom: 10.0, top: 10),
+
               color: Colors.lightBlue,
               child: Platform.isAndroid
                   ? getDropDownButton()
